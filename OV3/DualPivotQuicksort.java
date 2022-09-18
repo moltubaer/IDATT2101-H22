@@ -4,16 +4,13 @@ import java.util.Random;
 
 class DualPivotQuicksort {
  
-static void swap(int[] arr, int i, int j)
-{
+static void swap(int[] arr, int i, int j) {
     int temp = arr[i];
     arr[i] = arr[j];
     arr[j] = temp;
 }
  
-static void dualPivotQuickSort(int[] arr,
-                               int low, int high)
-{
+static void dualPivotQuickSort(int[] arr, int low, int high) {
     if (low < high)
     {
          
@@ -29,8 +26,7 @@ static void dualPivotQuickSort(int[] arr,
     }
 }
  
-static int[] partition(int[] arr, int low, int high)
-{
+static int[] partition(int[] arr, int low, int high) {
     if (arr[low] > arr[high])
         swap(arr, low, high);
          
@@ -102,54 +98,60 @@ private static int[] generateTable(int n) {
     int[] t = new int[n];
     Random random = new Random();
     for (int i = 0; i < t.length; i++) {
-        t[i] = random.nextInt(100);
+        t[i] = random.nextInt(1000);   // Random number between 0 and 999
     }
     return t;
 }
 
-// Driver code
+private static int[] generateDuplicateTable(int n) {
+    int[] t = new int[n];
+    Random random = new Random();
+    for (int i = 0; i < t.length; i++) {
+        t[i] = random.nextInt(3);   // Random number between 0 and 2
+    }
+    return t;
+}
+
+private static int[] generateSortedTable(int n) {
+    int[] t = new int[n];
+    Random random = new Random();
+    for (int i = 0; i < t.length; i++) {
+        t[i] = i;
+    }
+    return t;
+}
+
 public static void main(String[] args)
 {
-    // int[] array = { 24, 8, 42, 75, 29, 77, 38, 57 };
-    int[] array = generateTable(1000);
-    int length = array.length;
+    // int[] array = generateTable(40000);
+    // int[] array = generateDuplicateTable(10000);
+    int[] array = generateSortedTable(10000);
+    int n = array.length;
+	
+    // Sumcheck of unsorted array
+    int sumCheck1 = sumCheck(array);
 
-    System.out.println("n = " + array.length);
+    // Run time measurement
+    long startTime = System.nanoTime();
+    for (int i = 0; i < 1; i++) {
+        dualPivotQuickSort(array, 0, (n-1));
+    }
+    long endTime   = System.nanoTime();
+    long totalTime = (endTime - startTime);
+    System.out.println("Run time: " + (totalTime) + " nanoseconds");
+    System.out.println("Run time: " + (totalTime/1000) + " microseconds");
 
-    // System.out.print("Unsorted array: ");
-    // System.out.println();
-    // for (int i = 0; i < array.length; i++) {
-    //     System.out.print(array[i] + " ");
-	// }
-    // System.out.println();
-
-	int sumCheck1 = sumCheck(array);
-	dualPivotQuickSort(array, 0, (length-1));
+    // Sumcheck of sorted array
 	int sumCheck2 = sumCheck(array);
-
 	if (sumCheck1 == sumCheck2) {
 		System.out.println(sumCheck1 + " = " + sumCheck2 + ", the arrarys sum check has not been altered");
 	} else {
 		System.out.println(sumCheck1 + " =/= " + sumCheck2 + ", the arrarys sum check has been altered");
 	}
 
-
-    // System.out.print("Sorted array: ");
-    // System.out.println();
-    // for (int i = 0; i < array.length; i++) {
-    //     System.out.print(array[i] + " ");
-	// }
-    // System.out.println();
-
+    // Checks correct order of sorted array
     System.out.println(sortCheck(array));
 
-    long startTime = System.nanoTime();
-    for (int i = 0; i < 1000; i++) {
-        dualPivotQuickSort(array, 0, 7);
-    }
-    long endTime   = System.nanoTime();
-    long totalTime = (endTime - startTime) /1000;
-    System.out.println("Run time: " + totalTime + " milliseconds");
 
 }
 }

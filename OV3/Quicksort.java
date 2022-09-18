@@ -11,7 +11,7 @@ static void swap(int[] arr, int i, int j)
     arr[i] = arr[j];
     arr[j] = temp;
 }
-  
+
 /* This function takes last element as pivot, places
    the pivot element at its correct position in sorted
    array, and places all smaller (smaller than pivot)
@@ -30,12 +30,10 @@ static int partition(int[] arr, int low, int high)
   
     for(int j = low; j <= high - 1; j++)
     {
-          
         // If current element is smaller 
         // than the pivot
         if (arr[j] < pivot) 
         {
-              
             // Increment index of 
             // smaller element
             i++; 
@@ -55,7 +53,6 @@ static void quickSort(int[] arr, int low, int high)
 {
     if (low < high) 
     {
-          
         // pi is partitioning index, arr[p]
         // is now at right place 
         int pi = partition(arr, low, high);
@@ -66,7 +63,7 @@ static void quickSort(int[] arr, int low, int high)
         quickSort(arr, pi + 1, high);
     }
 }
-  
+
 // Function to print an array 
 static void printArray(int[] arr, int size)
 {
@@ -97,41 +94,61 @@ private static int[] generateTable(int n) {
     int[] t = new int[n];
     Random random = new Random();
     for (int i = 0; i < t.length; i++) {
-        t[i] = random.nextInt(100);
+        t[i] = random.nextInt(1000);   // Random number between 0 and 999
     }
     return t;
 }
 
-// Driver Code
+private static int[] generateDuplicateTable(int n) {
+    int[] t = new int[n];
+    Random random = new Random();
+    for (int i = 0; i < t.length; i++) {
+        t[i] = random.nextInt(3);   // Random number between 0 and 2
+    }
+    return t;
+}
+
+private static int[] generateSortedTable(int n) {
+    int[] t = new int[n];
+    Random random = new Random();
+    for (int i = 0; i < t.length; i++) {
+        t[i] = i;
+    }
+    return t;
+}
+
 public static void main(String[] args)
 {
-    int[] arr = generateTable(1000);
+    // int[] arr = generateTable(40000);
+    // int[] arr = generateDuplicateTable(10000);
+    int[] arr = generateSortedTable(10000);
     int n = arr.length;
 
-    System.out.println("n = " + n);
+    // Sumcheck of unsorted array
+    int sumCheck1 = sumCheck(arr);
 
-	int sumCheck1 = sumCheck(arr);
-    quickSort(arr, 0, n - 1);
+    // Run time measurement
+    long startTime = System.nanoTime();
+    for (int i = 0; i < 1; i++) {
+        quickSort(arr, 0, n - 1);
+    }
+    long endTime   = System.nanoTime();
+    long totalTime = (endTime - startTime);
+    // long totalTime = (endTime - startTime)/10;
+    System.out.println("Run time: " + (totalTime) + " nanoseconds");
+    System.out.println("Run time: " + (totalTime/1000) + " microseconds");
+
+    // Sumcheck of sorted array
 	int sumCheck2 = sumCheck(arr);
-
 	if (sumCheck1 == sumCheck2) {
 		System.out.println(sumCheck1 + " = " + sumCheck2 + ", the arrarys sum check has not been altered");
 	} else {
 		System.out.println(sumCheck1 + " =/= " + sumCheck2 + ", the arrarys sum check has been altered");
 	}
 
-    // System.out.println("Sorted array: ");
-    // printArray(arr, n);
-
+    // Checks correct order of sorted array
     System.out.println(sortCheck(arr));
 
-    long startTime = System.nanoTime();
-    for (int i = 0; i < 1000; i++) {
-        quickSort(arr, 0, n - 1);
-    }
-    long endTime   = System.nanoTime();
-    long totalTime = (endTime - startTime)/1000;
-    System.out.println("Run time: " + totalTime + " milliseconds");
 
 }
 }

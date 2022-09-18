@@ -16,7 +16,7 @@ public class Class {
 		}
 		long endTime   = System.nanoTime();
 		long totalTime = (endTime - startTime) /1000;
-		System.out.println("Run time: " + totalTime + " milliseconds");
+		System.out.println("Run time: " + totalTime + " nanoseconds");
 	}
 }
 
