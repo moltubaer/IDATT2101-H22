@@ -3,7 +3,7 @@ import java.util.Arrays;
 class CircularDoubleLinkedList {
 	private Node head = null;
 	private Node tail = null;
-	private int length = 0;		// Number of elements in the linked list
+	private int length = 0;
 
 	public Node getHead() {
 		return this.head;
@@ -102,10 +102,8 @@ public class LinkedListExercise {
 
 		while (count != maxlength) {
 			if (operator == "+") {
-				// System.out.println("addition");
 				rest = addition(result, node1.getValue(), node2.getValue(), rest);
 			} else if (operator == "-") {
-				// System.out.println("subtraction");
 				if (negativeResult) {
 					rest = subtraction(result, node2.getValue(), node1.getValue(), rest);
 				} else {
@@ -145,7 +143,6 @@ public class LinkedListExercise {
 			loanNext = true;
 		}
 		int value = first - last;
-		// System.out.println(first + " - " + last + " = " + value);
 		list.insertNodeFirst((value));
 		return loanNext;
 	}
@@ -161,29 +158,23 @@ public class LinkedListExercise {
 
 	public static void main(String[] args) {
 
-		String num1 = "11111111111176761296663380825390103670082238690104261201865299";
-		String num2 = "93154830849960715720286817854970639637715960319325";
-		// String num1 = "6154";
-		// String num2 = "4327";
+		// String num1 = "11111111111176761296663380825390103670082238690104261201865299";
+		// String num2 = "93154830849960715720286817854970639637715960319325";
+		String num1 = "20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+		String num2 = "1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
 
 		// String num1 = "123";
 		// String num2 = "987";
 
-
 		String add = "+";
 		String subtract = "-";
 
-		// Calculate(num1, num2, add);
+		System.out.println("Addition");
+		Calculate(num1, num2, add);
+		System.out.println("Subtraction");
 		Calculate(num1, num2, subtract);
-		// Calculate(num2, num1, subtract);
+		System.out.println("Subtraction with negative result");
+		Calculate(num2, num1, subtract);
 
 	}
 }
-
-
-
-
-
-
-
-
