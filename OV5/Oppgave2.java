@@ -1,180 +1,82 @@
-import java.util.Arrays;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 
-class CircularDoubleLinkedList {
-	private Node head = null;
-	private Node tail = null;
-	private int length = 0;
+class HashNode {
+	String data;
+	HashNode next;
 
-	public Node getHead() {
-		return this.head;
-	}
-
-	public Node getTail() {
-		return this.tail;
-	}
-
-	public int getLength() {
-		return this.length;
-	}
-
-	public void insertNodeFirst(int value) {
-		head = new Node(value, head, null);
-		if (tail == null) {
-			tail = head;
-		} else {
-			head.next.previous = head;
-		}
-		length++;
-	}
-
-	public void insertNodeLast(int value) {
-        Node newNode = new Node(value, null, tail);
-        if (tail != null) {
-			tail.next = newNode;
-		} else {
-			head = newNode;
-		}
-        tail = newNode;
-        length++;
-	}
-
-	public String printList() {
-
-	    Node element = getHead();
-		String text;
-		if (element.getValue() != 0) {
-			text = String.valueOf(element.getValue());
-		} else {
-			text = "";
-		}
-		boolean isFinished = false;
-
-		while (!isFinished) {
-			element = element.getNext();
-			if (element.getValue() != 0 || (element.getValue() == 0 && !text.equals(""))) {
-				text += String.valueOf(element.getValue());
-			} else {
-				text += "";
-			}
-			if (element.getNext() == null) {
-				isFinished = true;
-			}
-		}
-		return text.equals("") ? "0" : text;
-	}
-}
-
-class Node {
-	int value;
-	Node next;
-	Node previous;
-
-	Node (int value, Node next, Node previous) {
-        this.value = value;
+	HashNode (String data, HashNode next) {
+        this.data = data;
         this.next = next;
-        this.previous = previous;
     }
 
-	public int getValue() {
-		return value;
+	public String getData() {
+		return data;
 	}
-	public Node getNext() {
+	public HashNode getNext() {
 		return next;
 	}
-	public Node getPrevious() {
-		return previous;
-	}
+
 }
 
-public class LinkedListExercise {
+public class Oppgave1 {
 
-	public static void Calculate(String num1, String num2, String operator) {
-		int maxlength = (num1.length() >= num2.length()) ? (num1.length()+1) : (num2.length()+1);
-		CircularDoubleLinkedList list1 = convertStringtoList(num1, maxlength);
-		CircularDoubleLinkedList list2 = convertStringtoList(num2, maxlength);
-		CircularDoubleLinkedList result = new CircularDoubleLinkedList();
-		boolean rest = false;
-		int count = 0;
-		Node node1 = list1.getTail();
-		Node node2 = list2.getTail();
+	HashNode hashTable[];
+	int collisions;
 
-		boolean negativeResult = (num1.length() < num2.length() || (num1.length() == num2.length() && num1.charAt(0) < num2.charAt(0)));
-
-		while (count != maxlength) {
-			if (operator == "+") {
-				rest = addition(result, node1.getValue(), node2.getValue(), rest);
-			} else if (operator == "-") {
-				if (negativeResult) {
-					rest = subtraction(result, node2.getValue(), node1.getValue(), rest);
-				} else {
-					rest = subtraction(result, node1.getValue(), node2.getValue(), rest);
-				}
-			}
-			node1 = node1.getPrevious();
-			node2 = (node2 != null) ? node2.getPrevious() : null;
-			count++;
-		}
-		if (operator == "+") {
-			System.out.println(list1.printList() + " + " + list2.printList() + " = " + result.printList());
-		} else if (operator == "-") {
-			if (negativeResult) {
-				System.out.println(list1.printList() + " - " + list2.printList() + " = -" + result.printList());
-			} else {
-				System.out.println(list1.printList() + " - " + list2.printList() + " = " + result.printList());
-			}
-		}
-		// System.out.println(result.getLength());
+	public createHashTable(int length) {
+		arr = new HashNode[length/2]
+		collisions = 0;
 	}
 
-	public static boolean addition(CircularDoubleLinkedList list, int first, int last, boolean rest) {
-		int value = first + last;
-		boolean valueOver9 = false;
-		if (value > 9) valueOver9 = true;
-		if (rest) value++;
-		list.insertNodeFirst((value % 10));
-		return valueOver9;
+	public void insertIntoHashTable(String word) {
+		int index = hashFunction(word);
+		HashNode node = new HashNode(word, null);
+
+		if (hashTable[index] == null) {
+			hashTable[index] = node;
+		} else {
+			HashNode temp = hashTable[index];
+			node.next = temp;
+			hashTable[index] = node;
+		}
 	}
 
-	public static boolean subtraction(CircularDoubleLinkedList list, int first, int last, boolean rest) {
-		boolean loanNext = false;
-		if (rest == true) first--;
-		if (first < last) {
-			first += 10;
-			loanNext = true;
+	public int hashFunc(String word) {
+		int sum = 0;
+		int counter = 1;
+		for (char c : word.toCharArray()) {
+			sum += c * counter;
+			counter++;
 		}
-		int value = first - last;
-		list.insertNodeFirst((value));
-		return loanNext;
-	}
-
-	public static CircularDoubleLinkedList convertStringtoList(String input, int length) {
-        CircularDoubleLinkedList list = new CircularDoubleLinkedList();
-		Arrays.stream(input.split("")).forEach(s -> list.insertNodeLast(Integer.parseInt(s)));
-		while (list.getLength() < length) {
-            list.insertNodeFirst(0);
-		}
-		return list;
+		return sum % hashTable.length;
 	}
 
 	public static void main(String[] args) {
+//															HUSK Å ENDRE PÅ KOK!!!!!!!!!!!
+// ----------------------------------------------------------------------------------------------------------------------------------------
+		ArrayList<String> temp = new ArrayList<>();
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(new File("./navn.txt")));
+			String line;
+			while ((line = br.readLine()) != null) {
+				temp.add(line);
+			}
+			br.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+// ----------------------------------------------------------------------------------------------------------------------------------------
 
-		// String num1 = "11111111111176761296663380825390103670082238690104261201865299";
-		// String num2 = "93154830849960715720286817854970639637715960319325";
-		String num1 = "20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
-		String num2 = "1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
 
-		// String num1 = "123";
-		// String num2 = "987";
 
-		String add = "+";
-		String subtract = "-";
 
-		System.out.println("Addition");
-		Calculate(num1, num2, add);
-		System.out.println("Subtraction");
-		Calculate(num1, num2, subtract);
-		System.out.println("Subtraction with negative result");
-		Calculate(num2, num1, subtract);
 
 	}
 }
