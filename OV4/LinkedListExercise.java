@@ -39,7 +39,6 @@ class CircularDoubleLinkedList {
 	}
 
 	public String printList() {
-
 	    Node element = getHead();
 		String text;
 		if (element.getValue() != 0) {
@@ -129,8 +128,8 @@ public class LinkedListExercise {
 	public static boolean addition(CircularDoubleLinkedList list, int first, int last, boolean rest) {
 		int value = first + last;
 		boolean valueOver9 = false;
-		if (value > 9) valueOver9 = true;
 		if (rest) value++;
+		if (value > 9) valueOver9 = true;
 		list.insertNodeFirst((value % 10));
 		return valueOver9;
 	}
@@ -158,13 +157,8 @@ public class LinkedListExercise {
 
 	public static void main(String[] args) {
 
-		// String num1 = "11111111111176761296663380825390103670082238690104261201865299";
-		// String num2 = "93154830849960715720286817854970639637715960319325";
-		String num1 = "20000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
-		String num2 = "1000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
-
-		// String num1 = "123";
-		// String num2 = "987";
+		String num1 = "99999999999999999999999999999999999";
+		String num2 = "10000";
 
 		String add = "+";
 		String subtract = "-";
@@ -175,6 +169,5 @@ public class LinkedListExercise {
 		Calculate(num1, num2, subtract);
 		System.out.println("Subtraction with negative result");
 		Calculate(num2, num1, subtract);
-
 	}
 }

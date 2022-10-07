@@ -126,7 +126,7 @@ public class HashTable {
 		}
 
 		String name1 = "Alexander Moltu";
-		String name2 = "Jonas Kosmo";
+		String name2 = "Fridtjof Bø Svendsen";
 		System.out.println();
 		ht.findNode(name1);
 		ht.findNode(name2);
