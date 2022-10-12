@@ -4,7 +4,6 @@ import java.net.*;
 
 class Node {		
     int index;
-    int time;
 
     public Node (int i) {
         this.index = i;
@@ -97,10 +96,10 @@ class Graph {
     }
 
     public static void main(String [] args) {
-        String urlString = "https://www.idi.ntnu.no/emner/idatt2101/uv-graf/ø6g1";
+        // String urlString = "https://www.idi.ntnu.no/emner/idatt2101/uv-graf/ø6g1";
         // String urlString = "https://www.idi.ntnu.no/emner/idatt2101/uv-graf/ø6g2";
         // String urlString = "https://www.idi.ntnu.no/emner/idatt2101/uv-graf/ø6g5";
-        // String urlString = "https://www.idi.ntnu.no/emner/idatt2101/uv-graf/ø6g6";
+        String urlString = "https://www.idi.ntnu.no/emner/idatt2101/uv-graf/ø6g6";
         Graph graph = null;
 
         try {
