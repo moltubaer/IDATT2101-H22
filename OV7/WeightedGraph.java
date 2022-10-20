@@ -69,7 +69,7 @@ class WeightedGraph {
         }
     }
 
-    void shorten(Node node, Vertex vertex) {
+    void findShortestPath(Node node, Vertex vertex) {
         Last nodeLast = node.data;
         Last verNodeLast = vertex.to.data;
         if(verNodeLast.dist > nodeLast.dist + vertex.weight) {
@@ -90,7 +90,7 @@ class WeightedGraph {
         for(int i = this.nodesNum; i > 1; i--) {
             Node node = this.queue.poll();
             for(Vertex vertex = node.nodeVertex; vertex != null; vertex = vertex.nextVertex) {
-                shorten(node, vertex);
+                findShortestPath(node, vertex);
             }
         }
     }
