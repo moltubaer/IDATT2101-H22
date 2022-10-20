@@ -1,117 +1,124 @@
-import java.io.*;  
-import java.util.*;
-import java.net.*; 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.PriorityQueue;
+import java.util.StringTokenizer;
 
-class Node {		
+class Node {
+    Vertex nodeVertex;
+    Last data;
     int index;
+    int currentIndex;
 
-    public Node (int i) {
+    Node(int i, int c) {
         this.index = i;
-    }	
+        this.currentIndex = i;
+    }    
 }
 
-class Graph {
-    private int time; 
-    private int count;
-    private int number;
-    private ArrayList<LinkedList<Node>> adj;
+class Vertex {
+    Vertex nextVertex;
+    Node to;
+    int weight;
     
-    Graph(BufferedReader br) throws IOException {
-        this.time = 0;
-        this.count = 0;
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        this.number = Integer.parseInt(st.nextToken());
-        this.adj = new ArrayList<LinkedList<Node>>();
+    public Vertex(Node node, Vertex nextVertex, int weight) {
+        this.to = node;
+        this.nextVertex = nextVertex;
+        this.weight = weight;
+    }
+}
 
-        for(int i = 0; i < number; ++i) {
-            adj.add(new LinkedList<Node>());
+class Last {
+    int dist;
+    Node last;
+    static int infinity = 1000000000;
+    
+    Last() {
+        this.dist = infinity;
+    }
+}
+
+class WeightedGraph {
+    int nodesNum;
+    int vertexNum;
+    Node [] nodeList;
+    PriorityQueue<Node> queue;
+
+    Wgraph(BufferedReader br) throws IOException {
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        this.nodesNum = Integer.parseInt(st.nextToken());  
+        this.nodeList = new Node[nodesNum]; 
+        for(int i = 0; i < nodesNum; i++) {
+            nodeList[i] = new Node(i,i); 
         }
 
-        int t = Integer.parseInt(st.nextToken());
-        for (int j = 0; j < t; j++) {
+        int vertexNum = Integer.parseInt(st.nextToken());
+        for (int j = 0; j < vertexNum; j++) {
             st = new StringTokenizer(br.readLine());
             int from = Integer.parseInt(st.nextToken());
             int to = Integer.parseInt(st.nextToken());
-            addEdge(from, to);
+            int weight = Integer.parseInt(st.nextToken());
+
+            Vertex vertex = new Vertex(nodeList[to], nodeList[from].nodeVertex, weight);
+            nodeList[from].nodeVertex = vertex;
+        }
+
+        for (int i = 0; i < nodesNum; i++) {
+            nodeList[i].data = new Last();
         }
     }
 
-    void addEdge(int from,int to) {
-        adj.get(from).add(new Node(to));
-    }
-
-    void SCCPrint(int nodeNum, int lowest[], int discovery[], boolean stackMember[],  Stack<Integer> stack) {
-        int node = -1;
-        if (lowest[nodeNum] == discovery[nodeNum]) {
-            System.out.print("" + (this.count + 1) + ": ");
-            while (node != nodeNum) {
-                    node = (int)stack.pop();
-                    System.out.print(node + " ");
-                    stackMember[node] = false;
-                }
-            this.count++;
-            System.out.println();
+    void shorten(Node node, Vertex vertex) {
+        Last nodeLast = node.data;
+        Last verNodeLast = vertex.to.data;
+        if(verNodeLast.dist > nodeLast.dist + vertex.weight) {
+            verNodeLast.dist = nodeLast.dist + vertex.weight;
+            verNodeLast.last = node;
+            this.queue.remove(vertex.to);
+            this.queue.add(vertex.to);
         }
     }
+    
+    void dijkstra(Node startNode) {
+        startNode.data.dist = 0;
+        this.queue = new PriorityQueue<>(this.nodesNum, (a,b) ->(a.data).dist - (b.data).dist);
+        for (int i = 0; i < nodesNum; i++) {
+            this.queue.add(nodeList[i]);
+        }   
 
-    void SCC(){
-        int discovery[] = new int[number];
-        int lowest[] = new int[number];
-
-        for(int i = 0; i < number; i++){
-            discovery[i] = -1;
-            lowest[i] = -1;
-        }
-
-        boolean stackMember[] = new boolean[number];
-        Stack<Integer> stack = new Stack<Integer>();
-
-        for(int i = 0; i < number; i++){
-            if (discovery[i] == -1) {
-                SCCUtil(i, lowest, discovery, stackMember, stack);
+        for(int i = this.nodesNum; i > 1; i--) {
+            Node node = this.queue.poll();
+            for(Vertex vertex = node.nodeVertex; vertex != null; vertex = vertex.nextVertex) {
+                shorten(node, vertex);
             }
         }
-    }
-
-    void SCCUtil(int nodeNum, int lowest[], int discovery[], boolean stackMember[],  Stack<Integer> stack) {
-        discovery[nodeNum] = time;
-        lowest[nodeNum] = time;
-        time++;
-        stackMember[nodeNum] = true;
-        stack.push(nodeNum);
-
-        int node;
-        Iterator<Node> iterator = adj.get(nodeNum).iterator();
-
-        while (iterator.hasNext()) {
-            node = iterator.next().index;
-            if (discovery[node] == -1) {
-                SCCUtil(node, lowest, discovery, stackMember, stack);
-                lowest[nodeNum] = Math.min(lowest[nodeNum], lowest[node]);
-            } else if (stackMember[node] == true) {
-                lowest[nodeNum] = Math.min(lowest[nodeNum], discovery[node]);
-            }
-        }
-        SCCPrint(nodeNum, lowest, discovery, stackMember, stack);
     }
 
     public static void main(String [] args) {
-        String urlString = "https://www.idi.ntnu.no/emner/idatt2101/uv-graf/ø6g1";
-        // String urlString = "https://www.idi.ntnu.no/emner/idatt2101/uv-graf/ø6g2";
-        // String urlString = "https://www.idi.ntnu.no/emner/idatt2101/uv-graf/ø6g5";
-        // String urlString = "https://www.idi.ntnu.no/emner/idatt2101/uv-graf/ø6g6";
-        Graph graph = null;
-
+        String name = "vg1";
+        Wgraph graph =null;
         try {
-            URL url = new URL(urlString);
-            BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
-            graph = new Graph(br);
+            BufferedReader br = new BufferedReader(new FileReader(new File(name)));
+            graph = new Wgraph(br);
         } catch (IOException error) {
             error.printStackTrace();
         }
 
-        System.out.println("Graph acquired from url: " + urlString);
-        graph.SCC();
-        System.out.println("There are " + graph.count + " Strongly connected components in this graph");
+        int startNode = 1;
+        Node node = graph.nodeList[startNode];
+        graph.dijkstra(node);
+
+        System.out.println(name +" with start in " + startNode);
+        System.out.println();
+        System.out.format("%-7s%-7s%-7s%n", "Node","From node", "Distance");
+        for (int i = 0; i < graph.nodesNum; i++) {
+            if(graph.nodeList[i].data.dist != Last.infinity) {
+                String from = (graph.nodeList[i].index == startNode) ? "Start": String.valueOf(graph.nodeList[i].data.last.index);
+                System.out.format("%-7s%-7s%-7s%n",graph.nodeList[i].index, from, graph.nodeList[i].data.dist);
+            } else {
+                System.out.format("%-7s%-7s%-7s%n",graph.nodeList[i].index,"","Not reached");
+            }
+        }
     }
 }
