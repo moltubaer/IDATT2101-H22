@@ -45,7 +45,7 @@ class WeightedGraph {
     Node [] nodeList;
     PriorityQueue<Node> queue;
 
-    Wgraph(BufferedReader br) throws IOException {
+    WeightedGraph(BufferedReader br) throws IOException {
         StringTokenizer st = new StringTokenizer(br.readLine());
         this.nodesNum = Integer.parseInt(st.nextToken());  
         this.nodeList = new Node[nodesNum]; 
@@ -96,11 +96,11 @@ class WeightedGraph {
     }
 
     public static void main(String [] args) {
-        String name = "vg1";
-        Wgraph graph =null;
+        String name = "vg3";
+        WeightedGraph graph =null;
         try {
             BufferedReader br = new BufferedReader(new FileReader(new File(name)));
-            graph = new Wgraph(br);
+            graph = new WeightedGraph(br);
         } catch (IOException error) {
             error.printStackTrace();
         }
